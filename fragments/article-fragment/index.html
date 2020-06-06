@@ -1,0 +1,53 @@
+<div class="fragment_180102">
+  [#assign document = (contentLocalService.getDocumentFromRequest(request, locale))!/]
+  [#assign rootElement = (document.getRootElement())! /]
+  [#assign xPathSelector = saxReaderUtil.createXPath("dynamic-element[@name='Content']") /]
+  [#assign content = (xPathSelector.selectSingleNode(rootElement).getStringValue())!''/]
+  [#assign xPathSelector = saxReaderUtil.createXPath("dynamic-element[@name='YoutubeUrl']") /]
+  [#assign youtubeUrl = (xPathSelector.selectSingleNode(rootElement).getStringValue())!''/]
+  [#assign xPathSelector = saxReaderUtil.createXPath("dynamic-element[@name='HeaderImage']") /]
+  [#assign imageString = ((xPathSelector.selectSingleNode(rootElement).getStringValue())?trim)!''/]
+  [#if imageString?has_content]
+    [#assign dlAppLocalService = serviceLocator.findService("com.liferay.document.library.kernel.service.DLAppLocalService") /]
+    [#assign imageJson = imageString?eval/]  
+    [#assign fileEntryId = ((imageJson.fileEntryId)?trim)!0 /]
+    [#assign imageUrl = (contentLocalService.getPreviewUrlFromFileEntryId(fileEntryId?number)!'' )/]
+    [#assign altImage = (imageJson.alt?trim)!'' /]
+  [/#if]
+  [#assign xPathSelector = saxReaderUtil.createXPath("dynamic-element[@name='RelevantLink']") />
+  [#assign linkList = (xPathSelector.selectNodes(rootElement))![]/]
+  [#assign relevantLinks = [] /]
+  [#list linkList as link]
+    [#if link?has_content && (link.getStringValue()?trim)?has_content]
+      [#assign xPathSelector = saxReaderUtil.createXPath("dynamic-element[@name='LinkText']") />
+      [#assign linkText = ((xPathSelector.selectSingleNode(link).getStringValue())?trim)!''/]
+      [#assign xPathSelector = saxReaderUtil.createXPath("dynamic-element[@name='LinkUrl']") />
+      [#assign linkUrl = ((xPathSelector.selectSingleNode(link).getStringValue())?trim)!''/]
+      [#assign relevantLinks = relevantLinks + [{
+      "url": linkUrl, "text": linkText}] /]
+    [/#if]
+  [/#list]  
+
+  <div class="current-article">
+    [#if imageUrl?has_content]
+      <img class='header-image' src="${imageUrl}" alt="${altImage}"></img>
+    [/#if]
+    [#if content?has_content]
+      <div>${content}</div>
+    [/#if]
+    
+    [#if youtubeUrl?has_content]
+     <a href="${youtubeUrl}">Watch this video for more information!</a>
+    [/#if]
+    
+    
+    [#if relevantLinks?has_content]
+      <h2>These links might be interesting as well:</h2>
+      <ul>
+        [#list relevantLinks as link]
+          <li><a href="${link.url}">${link.text}</a></li>
+        [/#list]
+      </ul>
+    [/#if]
+  </div>
+</div>

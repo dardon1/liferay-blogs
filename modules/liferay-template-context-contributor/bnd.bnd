@@ -1,0 +1,3 @@
+Bundle-Name: liferay-template-context-contributor
+Bundle-SymbolicName: nl.finalist.blog.templates.contributor
+Bundle-Version: 1.0.0
