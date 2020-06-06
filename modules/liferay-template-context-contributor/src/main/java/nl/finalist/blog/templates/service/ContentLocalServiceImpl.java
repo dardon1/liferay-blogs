@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.DocumentException;
 import com.liferay.portal.kernel.xml.SAXReader;
@@ -69,7 +70,7 @@ public class ContentLocalServiceImpl implements ContentLocalService{
 	}
 	
 	private JournalArticle getArticleFromClassPK(long classPK) {
-		return journalArticleLocalService.fetchLatestArticle(classPK);
+		return journalArticleLocalService.fetchLatestArticle(classPK, WorkflowConstants.STATUS_APPROVED);
 	}
 	
 	private FileEntry getFileEntry(long fileEntryId) {
