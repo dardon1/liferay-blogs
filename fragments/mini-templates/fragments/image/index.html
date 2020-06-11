@@ -1,0 +1,45 @@
+<div class="fragment_210251">
+  [#assign currentEntry = (request.getAttribute("LIFERAY_SHARED_LAYOUT_ASSET_ENTRY"))! /]
+
+[#assign imageUrl = ''/]
+[#if currentEntry?has_content]
+  [#assign journalArticleLocalService = serviceLocator.findService("com.liferay.journal.service.JournalArticleLocalService") /]
+  [#assign currentArticle = journalArticleLocalService.fetchLatestArticle((currentEntry.classPK)!0, 0) /] <!--fetch latest APPROVED article -->
+  [#if currentArticle?has_content]
+    [#assign title = (currentArticle.getTitle(locale))!'' /]
+    [#assign document = saxReaderUtil.read(currentArticle.getContentByLocale(locale.toString()) )/]
+    [#assign rootElement = document.getRootElement() ]
+    [#assign xPathSelector = saxReaderUtil.createXPath("dynamic-element[@name='HeaderImage']") /]
+    [#assign imageString = ((xPathSelector.selectSingleNode(rootElement).getStringValue())?trim)!''/]
+    [#if imageString?has_content]
+      [#assign dlAppLocalService = serviceLocator.findService("com.liferay.document.library.kernel.service.DLAppLocalService") /]
+      [#assign imageJson = imageString?eval/]  
+      [#assign fileEntryId = ((imageJson.fileEntryId)!'0')?trim /]
+      [#assign fileEntry = dlAppLocalService.getFileEntry(fileEntryId?number) /]
+      [#if fileEntry?has_content]
+        [#assign imageUrl =  themeDisplay.getPortalURL() + themeDisplay.getPathContext() + "/documents/" + themeDisplay.getScopeGroupId() + "/" + fileEntry.getFolderId() +  "/" + fileEntry.getTitle()?url('ISO-8859-1') /]
+      [/#if]
+      [#assign altImage = (imageJson.alt?trim)!'' /]
+    [/#if]
+  [/#if]
+[/#if]
+
+[#if imageUrl?has_content]
+  
+    <div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="col-12 col-lg-9 col-xl-8">
+          <div style="max-height:400px;overflow: hidden; width:100%;">
+            <img src="${imageUrl}" alt="${altImage!''}"></img>
+            <div style="position: absolute;top: 80%;left: 5%; color:white"><h1 style="font-size: 2.625rem;">${title!''}</h1></div>
+          </div>
+        </div>
+      </div>
+    </div>  
+[/#if]
+  
+  [#assign complete_url = request.getAttribute("CURRENT_COMPLETE_URL")!'' /]
+[#if complete_url?has_content && httpUtil.getParameter(complete_url, "p_l_mode", false)?contains("edit")]
+  <div style="display:block; border:1px solid red; height:2em"><p> This fragment renders the image. </p> </div> </div><!-- this will only render in edit mode of the display page -->
+[/#if]
+</div>

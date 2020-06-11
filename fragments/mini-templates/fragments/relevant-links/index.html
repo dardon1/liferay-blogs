@@ -1,0 +1,46 @@
+<div class="fragment_210252" style="margin-top:2em">
+[#assign currentEntry = (request.getAttribute("LIFERAY_SHARED_LAYOUT_ASSET_ENTRY"))! /]
+
+[#if currentEntry?has_content]
+  [#assign journalArticleLocalService = serviceLocator.findService("com.liferay.journal.service.JournalArticleLocalService") /]
+  [#assign currentArticle = journalArticleLocalService.fetchLatestArticle((currentEntry.classPK)!0, 0) /] <!--fetch latest APPROVED article -->
+  [#if currentArticle?has_content]
+    [#assign document = saxReaderUtil.read(currentArticle.getContentByLocale(locale.toString()) )/]
+    [#assign rootElement = document.getRootElement() ]
+    [#assign xPathSelector = saxReaderUtil.createXPath("dynamic-element[@name='RelevantLink']") />
+  [#assign linkList = (xPathSelector.selectNodes(rootElement))![]/]
+  [#assign relevantLinks = [] /]
+  [#list linkList as link]
+    [#if link?has_content && (link.getStringValue()?trim)?has_content]
+      [#assign xPathSelector = saxReaderUtil.createXPath("dynamic-element[@name='LinkText']") />
+      [#assign linkText = ((xPathSelector.selectSingleNode(link).getStringValue())?trim)!''/]
+      [#assign xPathSelector = saxReaderUtil.createXPath("dynamic-element[@name='LinkUrl']") />
+      [#assign linkUrl = ((xPathSelector.selectSingleNode(link).getStringValue())?trim)!''/]
+      [#assign relevantLinks = relevantLinks + [{
+      "url": linkUrl, "text": linkText}] /]
+    [/#if]
+  [/#list]  
+[/#if]
+[/#if]
+  [#if relevantLinks?has_content]
+    <div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="col-12 col-lg-9 col-xl-8">
+				  <div>
+  				  <h2>Read more about this subject</h2>
+            <ul class="list-group">
+              [#list relevantLinks as link]
+                <li class="list-group-item"><a href="${link.url}">${link.text}</a></li>
+              [/#list]
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>  
+    [/#if]
+    
+  [#assign complete_url = request.getAttribute("CURRENT_COMPLETE_URL")!'' /]
+[#if complete_url?has_content && httpUtil.getParameter(complete_url, "p_l_mode", false)?contains("edit")]
+  <div style="display:block; border:1px solid red; height:2em"><p> This fragment renders the relevant links. </p> </div> </div><!-- this will only render in edit mode of the display page -->
+[/#if]
+</div>

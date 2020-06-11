@@ -30,24 +30,56 @@
 
   <div class="current-article">
     [#if imageUrl?has_content]
-      <img class='header-image' src="${imageUrl}" alt="${altImage}"></img>
+        <div class="container-fluid">
+    			<div class="row justify-content-center">
+    				<div class="col-12 col-lg-9 col-xl-8">
+              <div style="max-height:400px;overflow: hidden; width:100%;">
+                <img src="${imageUrl}" alt="${altImage!''}"></img>
+                <div style="position: absolute;top: 80%;left: 5%; color:white"><h1 style="font-size: 2.625rem;">${title!''}</h1></div>
+              </div>
+            </div>
+          </div>
+        </div>  
     [/#if]
     [#if content?has_content]
-      <div>${content}</div>
+      <div class="container-fluid" style="margin-top:2em">
+  			<div class="row justify-content-center">
+  				<div class="col-12 col-lg-9 col-xl-8">
+  				  ${content}
+  				</div>
+  			</div>
+  		</div>	
     [/#if]
-    
+      
     [#if youtubeUrl?has_content]
-     <a href="${youtubeUrl}">Watch this video for more information!</a>
+      <div class="container-fluid">
+  			<div class="row justify-content-center">
+  				<div class="col-12 col-lg-9 col-xl-8">
+            <iframe frameborder="0" scrolling="no" width="788.54" height="443" type="text/html" src="${youtubeUrl}" style="margin:0 auto; display:block"></iframe>
+          </div>
+        </div>
+      </div>  
     [/#if]
-    
-    
     [#if relevantLinks?has_content]
-      <h2>These links might be interesting as well:</h2>
-      <ul>
-        [#list relevantLinks as link]
-          <li><a href="${link.url}">${link.text}</a></li>
-        [/#list]
-      </ul>
+      <div class="container-fluid" style="margin-top:2em;">
+  			<div class="row justify-content-center">
+  				<div class="col-12 col-lg-9 col-xl-8">
+  				  <div>
+    				  <h2>Read more about this subject</h2>
+              <ul class="list-group">
+                [#list relevantLinks as link]
+                  <li class="list-group-item"><a href="${link.url}">${link.text}</a></li>
+                [/#list]
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>  
     [/#if]
   </div>
+  
+[#assign complete_url = request.getAttribute("CURRENT_COMPLETE_URL")!'' /]
+[#if complete_url?has_content && httpUtil.getParameter(complete_url, "p_l_mode", false)?contains("edit")]
+  <div style="display:block; border:1px solid red; height:2em"><p> This fragment renders the article completely. </p> </div> </div><!-- this will only render in edit mode of the display page -->
+[/#if]
 </div>
