@@ -1,0 +1,4 @@
+Bundle-Name: Admin Web My Account jsp fragment
+Bundle-SymbolicName: admin.web.my.account.fragment
+Fragment-Host:  com.liferay.users.admin.web;bundle-version="[4.0.48,5.0.0)"
+Bundle-Version: 1.0.0
