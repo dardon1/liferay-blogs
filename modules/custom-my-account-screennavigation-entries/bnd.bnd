@@ -1,4 +1,4 @@
 Bundle-Name: Custom My Account Screen navigation entries
-Bundle-SymbolicName: custom. my.account.screennavigation.entries
+Bundle-SymbolicName: custom.my.account.screennavigation.entries
 Web-ContextPath: /custom-my-account-web
 Bundle-Version: 1.0.0
