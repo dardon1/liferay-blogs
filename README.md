@@ -23,3 +23,9 @@
 1. Install the fragment bundle from */modules/admin-web-my-account-fragment (check if bundle version matches your environment)
 2. Install the custom screen navigation module from */modules/custom-my-account-screennavigation-entries
 3. Check the "My Account settings" screen
+
+
+## *Allow portlet pages to be shown in Liferay Search* [Blog](https://blog.finalist.nl/en/blog//allow-portlet-pages-be-shown-liferay-search) 
+### Installation instructions
+1. Install the module portlet-layout-model-pre-filter-contributor
+2. Check whether you can now find widget pages, through search or use the Search Insight portlet to see if the query is changed
